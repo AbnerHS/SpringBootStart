@@ -13,7 +13,7 @@ import br.com.abner.springbootstart.math.SimpleMath;
 public class MathController {
     
     SimpleMath math = new SimpleMath();
-
+ 
     @RequestMapping(value = "/sum/{numberOne}/{numberTwo}", method = RequestMethod.GET)
     public Double sum(
         @PathVariable(value = "numberOne") String numberOne, 
