@@ -2,7 +2,9 @@ package br.com.abner.springbootstart.data.vo.v1;
 
 import java.io.Serializable;
 
-public class PersonVO implements Serializable {
+import org.springframework.hateoas.RepresentationModel;
+
+public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
