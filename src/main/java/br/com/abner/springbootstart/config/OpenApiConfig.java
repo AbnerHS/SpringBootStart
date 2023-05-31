@@ -17,10 +17,10 @@ public class OpenApiConfig {
                 .title("RESTful API with Java 18 and Spring Boot 3.1")
                 .version("v1")
                 .description("RESTful API of Person")
-                .termsOfService("https://www.google.com/")
+                .termsOfService("http://localhost:8080/swagger-ui/index.html")
                 .license(
                     new License()
                         .name("Apache 2.0")
-                        .url("https://www.google.com/")));
+                        .url("http://localhost:8080/swagger-ui/index.html")));
     }
 }
