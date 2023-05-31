@@ -84,7 +84,6 @@ public class BookController {
             @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
         })
     public BookVO create(@RequestBody BookVO book) throws Exception {
-        System.out.println("book = " + book);
         return service.create(book);
     }
 
