@@ -3,6 +3,7 @@ package br.com.abner.springbootstart.data.vo.v1;
 import java.io.Serializable;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.lang.Nullable;
 
 public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
 
@@ -74,7 +75,7 @@ public class PersonVO extends RepresentationModel<PersonVO> implements Serializa
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
