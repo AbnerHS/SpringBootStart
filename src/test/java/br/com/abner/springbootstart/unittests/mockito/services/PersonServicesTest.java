@@ -47,7 +47,6 @@ public class PersonServicesTest {
     @Test
     void testFindAll() {
         List<Person> personList = input.mockEntityList();
-        // person.setId(1L);
 
         when(repository.findAll()).thenReturn(personList);
 
@@ -118,7 +117,8 @@ public class PersonServicesTest {
         vo.setId(1L);
         when(repository.save(entity)).thenReturn(persisted);
         
-        var result = service.create(vo);
+        PersonVO result = service.create(vo);
+
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
@@ -154,7 +154,8 @@ public class PersonServicesTest {
         when(repository.findById(1L)).thenReturn(Optional.of(entity));
         when(repository.save(entity)).thenReturn(persisted);
         
-        var result = service.update(vo);
+        PersonVO result = service.update(vo);
+        
         assertNotNull(result);
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
