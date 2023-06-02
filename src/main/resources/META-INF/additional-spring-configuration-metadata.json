@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "cors.origin-patterns",
+  "type": "java.lang.String",
+  "description": "allowed cross origins domains"
+}]}
