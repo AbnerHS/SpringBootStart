@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import br.com.abner.springbootstart.controllers.PersonController;
 import br.com.abner.springbootstart.data.vo.v1.PersonVO;
 import br.com.abner.springbootstart.exceptions.RequiredObjectIsNullException;
+import br.com.abner.springbootstart.exceptions.ResourceNotFoundException;
 import br.com.abner.springbootstart.mapper.DozerMapper;
 import br.com.abner.springbootstart.model.Person;
 import br.com.abner.springbootstart.repository.PersonRepository;
@@ -38,7 +39,7 @@ public class PersonServices {
         logger.info("Finding one person!");
 
         Person entity = repository.findById(id)
-            .orElseThrow(() -> new RequiredObjectIsNullException("No records found for this ID!"));
+            .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
         PersonVO vo = DozerMapper.parseObject(entity, PersonVO.class);
         vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
@@ -66,7 +67,7 @@ public class PersonServices {
 
         //Recebe ValueObject, busca e recebe Person (Entity)
         Person entity = repository.findById(person.getId())
-            .orElseThrow(() -> new RequiredObjectIsNullException("No records found for this ID!"));
+            .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
         entity.setFirstName(person.getFirstName());
         entity.setLastName(person.getLastName());
@@ -82,7 +83,7 @@ public class PersonServices {
         logger.info("Deleting one person!");
 
         Person entity = repository.findById(id)
-            .orElseThrow(() -> new RequiredObjectIsNullException("No records found for this ID!"));
+            .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
         
         repository.delete(entity);
     }
