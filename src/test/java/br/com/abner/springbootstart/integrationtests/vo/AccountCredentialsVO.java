@@ -1,7 +1,10 @@
-package br.com.abner.springbootstart.data.vo.v1;
+package br.com.abner.springbootstart.integrationtests.vo;
 
 import java.io.Serializable;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class AccountCredentialsVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -16,6 +19,7 @@ public class AccountCredentialsVO implements Serializable {
         this.username = username;
         this.password = password;
     }
+
     public String getUsername() {
         return username;
     }
