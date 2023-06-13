@@ -3,7 +3,6 @@ package br.com.abner.springbootstart.security.jwt;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -109,8 +108,6 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
-        Logger logger = Logger.getLogger(JwtTokenProvider.class.getName());
-        logger.severe("TEST");
         try {
             DecodedJWT decodedJWT = decodedToken(token);
             if (decodedJWT.getExpiresAt().before(new Date())) {
