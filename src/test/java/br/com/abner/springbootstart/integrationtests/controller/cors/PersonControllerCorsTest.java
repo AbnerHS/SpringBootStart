@@ -1,11 +1,9 @@
-package br.com.abner.springbootstart.integrationtests.controller.withjson;
+package br.com.abner.springbootstart.integrationtests.controller.cors;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -15,7 +13,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +30,7 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
-public class PersonControllerTest extends AbstractIntegrationTest {
+public class PersonControllerCorsTest extends AbstractIntegrationTest {
     
     private static RequestSpecification specification;
     private static ObjectMapper objectMapper;
@@ -83,6 +80,7 @@ public class PersonControllerTest extends AbstractIntegrationTest {
 
 		String content = given().spec(specification)
                 .contentType(TestConfig.CONTENT_TYPE_JSON)
+                    .header(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_GOOGLE)
                     .body(person)
 				    .when()
 					.post()
@@ -102,49 +100,41 @@ public class PersonControllerTest extends AbstractIntegrationTest {
 
         assertTrue(persistedPerson.getId() > 0);
 
-        assertEquals("Isaac", persistedPerson.getFirstName());
-        assertEquals("Newton", persistedPerson.getLastName());
-        assertEquals("Reino Unido", persistedPerson.getAddress());
+        assertEquals("George", persistedPerson.getFirstName());
+        assertEquals("Young", persistedPerson.getLastName());
+        assertEquals("São Paulo - Brasil", persistedPerson.getAddress());
         assertEquals("Male", persistedPerson.getGender());  
 	}
 
     @Test
     @Order(2)
-	public void testUpdate() throws JsonMappingException, JsonProcessingException {
-        person.setLastName("Newton RS");
+	public void testCreateWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
+        mockPerson();
 
 		String content = given().spec(specification)
                 .contentType(TestConfig.CONTENT_TYPE_JSON)
+                    .header(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_TWITTER)
                     .body(person)
 				    .when()
 					.post()
 				.then()
-					.statusCode(200)
+					.statusCode(403)
 				.extract()
 					.body()
 						.asString();
-		
-        PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
-        person = persistedPerson;
-        assertNotNull(persistedPerson.getId());
-        assertNotNull(persistedPerson.getFirstName());
-        assertNotNull(persistedPerson.getLastName());
-        assertNotNull(persistedPerson.getAddress());
-        assertNotNull(persistedPerson.getGender());
-
-        assertEquals(person.getId(), persistedPerson.getId());
-
-        assertEquals("Isaac", persistedPerson.getFirstName());
-        assertEquals("Newton RS", persistedPerson.getLastName());
-        assertEquals("Reino Unido", persistedPerson.getAddress());
-        assertEquals("Male", persistedPerson.getGender());   
+                        
+        assertNotNull(content);
+        assertEquals("Invalid CORS request", content);        
 	}
 
     @Test
     @Order(3)
 	public void testFindById() throws JsonMappingException, JsonProcessingException {
-        String content = given().spec(specification)
+        mockPerson();
+
+		String content = given().spec(specification)
                 .contentType(TestConfig.CONTENT_TYPE_JSON)
+                    .header(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_GOOGLE)
                     .pathParam("id", person.getId())
 				    .when()
 					.get("{id}")
@@ -162,95 +152,39 @@ public class PersonControllerTest extends AbstractIntegrationTest {
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
 
-        assertEquals(person.getId(), persistedPerson.getId());
+        assertTrue(persistedPerson.getId() > 0);
 
-        assertEquals("Isaac", persistedPerson.getFirstName());
-        assertEquals("Newton RS", persistedPerson.getLastName());
-        assertEquals("Reino Unido", persistedPerson.getAddress());
-        assertEquals("Male", persistedPerson.getGender());   
+        assertEquals("George", persistedPerson.getFirstName());
+        assertEquals("Young", persistedPerson.getLastName());
+        assertEquals("São Paulo - Brasil", persistedPerson.getAddress());
+        assertEquals("Male", persistedPerson.getGender());  
 	}
 
     @Test
     @Order(4)
-	public void testDelete() throws JsonMappingException, JsonProcessingException {
-        given().spec(specification)
-            .contentType(TestConfig.CONTENT_TYPE_JSON)
-                .pathParam("id", person.getId())
-                .when()
-                .delete("{id}")
-            .then()
-                .statusCode(204);
-	}
+	public void testFindByIdWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
+        mockPerson();
 
-
-    @Test
-    @Order(5)
-	public void testFindAll() throws JsonMappingException, JsonProcessingException {
 		String content = given().spec(specification)
                 .contentType(TestConfig.CONTENT_TYPE_JSON)
+                    .header(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_TWITTER)
+                    .pathParam("id", person.getId())
 				    .when()
-					.get()
+					.get("{id}")
 				.then()
-					.statusCode(200)
+					.statusCode(403)
 				.extract()
 					.body()
-                        .asString();
+						.asString();
 		
-        List<PersonVO> personList = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
-        PersonVO foundPersonOne = personList.get(0);
-
-        assertNotNull(foundPersonOne.getId());
-        assertNotNull(foundPersonOne.getFirstName());
-        assertNotNull(foundPersonOne.getLastName());
-        assertNotNull(foundPersonOne.getAddress());
-        assertNotNull(foundPersonOne.getGender());
-
-        assertEquals(1, foundPersonOne.getId());
-
-        assertEquals("Abner Henrique", foundPersonOne.getFirstName());
-        assertEquals("dos Santos Simas", foundPersonOne.getLastName());
-        assertEquals("Rua Itororó, 410", foundPersonOne.getAddress());
-        assertEquals("Male", foundPersonOne.getGender());
-		
-        PersonVO foundPersonFive = personList.get(4);
-
-        assertNotNull(foundPersonFive.getId());
-        assertNotNull(foundPersonFive.getFirstName());
-        assertNotNull(foundPersonFive.getLastName());
-        assertNotNull(foundPersonFive.getAddress());
-        assertNotNull(foundPersonFive.getGender());
-
-        assertEquals(5, foundPersonFive.getId());
-
-        assertEquals("Jane", foundPersonFive.getFirstName());
-        assertEquals("Smith", foundPersonFive.getLastName());
-        assertEquals("456 Elm St", foundPersonFive.getAddress());
-        assertEquals("Female", foundPersonFive.getGender());
-	}
-
-    @Test
-    @Order(6)
-	public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
-		
-        RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
-            .setBasePath("/api/person/v1")
-            .setPort(TestConfig.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-            .build();
-        
-        given().spec(specificationWithoutToken)
-            .contentType(TestConfig.CONTENT_TYPE_JSON)
-                .when()
-                .get()
-            .then()
-                .statusCode(403);
+        assertNotNull(content);
+        assertEquals("Invalid CORS request", content);
 	}
 
     private void mockPerson() {
-        person.setFirstName("Isaac");
-        person.setLastName("Newton");
-        person.setAddress("Reino Unido");
+        person.setFirstName("George");
+        person.setLastName("Young");
+        person.setAddress("São Paulo - Brasil");
         person.setGender("Male");
     }
 }
