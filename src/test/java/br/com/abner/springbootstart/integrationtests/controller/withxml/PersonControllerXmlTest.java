@@ -1,4 +1,4 @@
-package br.com.abner.springbootstart.integrationtests.controller.withjson;
+package br.com.abner.springbootstart.integrationtests.controller.withxml;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,9 +18,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import br.com.abner.springbootstart.config.TestConfig;
+// import br.com.abner.springbootstart.data.vo.v1.TokenVO;
 import br.com.abner.springbootstart.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.abner.springbootstart.integrationtests.vo.AccountCredentialsVO;
 import br.com.abner.springbootstart.integrationtests.vo.PersonVO;
@@ -33,16 +34,16 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
-public class PersonControllerTest extends AbstractIntegrationTest {
+public class PersonControllerXmlTest extends AbstractIntegrationTest {
     
     private static RequestSpecification specification;
-    private static ObjectMapper objectMapper;
+    private static XmlMapper objectMapper;
 
     private static PersonVO person;
 
     @BeforeAll
     public static void setup() {
-        objectMapper = new ObjectMapper();
+        objectMapper = new XmlMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         person = new PersonVO();
@@ -56,7 +57,8 @@ public class PersonControllerTest extends AbstractIntegrationTest {
         String accessToken = given()
             .basePath("/auth/signin")
                 .port(TestConfig.SERVER_PORT)
-                .contentType(TestConfig.CONTENT_TYPE_JSON)
+                .contentType(TestConfig.CONTENT_TYPE_XML)
+                .accept(TestConfig.CONTENT_TYPE_XML)
             .body(user)
                 .when()
             .post()
@@ -82,7 +84,8 @@ public class PersonControllerTest extends AbstractIntegrationTest {
         mockPerson();
 
 		String content = given().spec(specification)
-                .contentType(TestConfig.CONTENT_TYPE_JSON)
+                .contentType(TestConfig.CONTENT_TYPE_XML)
+                .accept(TestConfig.CONTENT_TYPE_XML)
                     .body(person)
 				    .when()
 					.post()
@@ -114,7 +117,8 @@ public class PersonControllerTest extends AbstractIntegrationTest {
         person.setLastName("Newton RS");
 
 		String content = given().spec(specification)
-                .contentType(TestConfig.CONTENT_TYPE_JSON)
+                .contentType(TestConfig.CONTENT_TYPE_XML)
+                .accept(TestConfig.CONTENT_TYPE_XML)
                     .body(person)
 				    .when()
 					.post()
@@ -144,7 +148,8 @@ public class PersonControllerTest extends AbstractIntegrationTest {
     @Order(3)
 	public void testFindById() throws JsonMappingException, JsonProcessingException {
         String content = given().spec(specification)
-                .contentType(TestConfig.CONTENT_TYPE_JSON)
+                .contentType(TestConfig.CONTENT_TYPE_XML)
+                .accept(TestConfig.CONTENT_TYPE_XML)
                     .pathParam("id", person.getId())
 				    .when()
 					.get("{id}")
@@ -174,7 +179,8 @@ public class PersonControllerTest extends AbstractIntegrationTest {
     @Order(4)
 	public void testDelete() throws JsonMappingException, JsonProcessingException {
         given().spec(specification)
-            .contentType(TestConfig.CONTENT_TYPE_JSON)
+            .contentType(TestConfig.CONTENT_TYPE_XML)
+            .accept(TestConfig.CONTENT_TYPE_XML)
                 .pathParam("id", person.getId())
                 .when()
                 .delete("{id}")
@@ -187,7 +193,8 @@ public class PersonControllerTest extends AbstractIntegrationTest {
     @Order(5)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException {
 		String content = given().spec(specification)
-                .contentType(TestConfig.CONTENT_TYPE_JSON)
+                .contentType(TestConfig.CONTENT_TYPE_XML)
+                .accept(TestConfig.CONTENT_TYPE_XML)
 				    .when()
 					.get()
 				.then()
@@ -231,7 +238,6 @@ public class PersonControllerTest extends AbstractIntegrationTest {
     @Test
     @Order(6)
 	public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
-		
         RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
             .setBasePath("/api/person/v1")
             .setPort(TestConfig.SERVER_PORT)
@@ -240,7 +246,8 @@ public class PersonControllerTest extends AbstractIntegrationTest {
             .build();
         
         given().spec(specificationWithoutToken)
-            .contentType(TestConfig.CONTENT_TYPE_JSON)
+            .contentType(TestConfig.CONTENT_TYPE_XML)
+            .accept(TestConfig.CONTENT_TYPE_XML)
                 .when()
                 .get()
             .then()
