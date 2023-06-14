@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import br.com.abner.springbootstart.config.TestConfig;
-// import br.com.abner.springbootstart.data.vo.v1.TokenVO;
 import br.com.abner.springbootstart.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.abner.springbootstart.integrationtests.vo.AccountCredentialsVO;
 import br.com.abner.springbootstart.integrationtests.vo.PersonVO;

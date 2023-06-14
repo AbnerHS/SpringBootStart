@@ -13,9 +13,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import br.com.abner.springbootstart.config.TestConfig;
-import br.com.abner.springbootstart.data.vo.v1.TokenVO;
+// import br.com.abner.springbootstart.data.vo.v1.TokenVO;
 import br.com.abner.springbootstart.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.abner.springbootstart.integrationtests.vo.AccountCredentialsVO;
+import br.com.abner.springbootstart.integrationtests.vo.TokenVO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
