@@ -106,7 +106,7 @@ public class PersonController {
         return service.update(person);
     }
 
-    @PatchMapping(value = "/{id}", 
+    @PatchMapping(value = "/{id}/disable", 
         produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
     @Operation(summary = "Disable a Person by your ID", description = "Disable a Person by your ID", 
         tags = {"People"}, 
@@ -122,6 +122,24 @@ public class PersonController {
         })
     public PersonVO disablePerson(@PathVariable(value = "id") Long id) {
         return service.disablePerson(id);
+    }
+
+    @PatchMapping(value = "/{id}/enable", 
+        produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
+    @Operation(summary = "Enable a Person by your ID", description = "Enable a Person by your ID", 
+        tags = {"People"}, 
+        responses = {
+            @ApiResponse(description = "Success", responseCode = "200", 
+                content = @Content(schema = @Schema(implementation = PersonVO.class))
+            ),
+            @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+            @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+            @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+            @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+            @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
+        })
+    public PersonVO enablePerson(@PathVariable(value = "id") Long id) {
+        return service.enablePerson(id);
     }
 
     @DeleteMapping(value = "/{id}")

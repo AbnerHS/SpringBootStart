@@ -94,6 +94,20 @@ public class PersonServices {
         return vo;
     }
 
+    @Transactional
+    public PersonVO enablePerson(Long id) {
+        logger.info("Finding one person!");
+
+        repository.enablePerson(id);
+
+        Person entity = repository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+
+        PersonVO vo = DozerMapper.parseObject(entity, PersonVO.class);
+        vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+        return vo;
+    }
+
     public void delete(Long id) {
         logger.info("Deleting one person!");
 
