@@ -154,7 +154,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
                 .accept(TestConfig.CONTENT_TYPE_XML)
                     .pathParam("id", person.getId())
 				    .when()
-					.patch("{id}")
+					.patch("{id}/disable")
 				.then()
 					.statusCode(200)
 				.extract()
@@ -212,6 +212,38 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
 
     @Test
     @Order(5)
+	public void testEnablePersonyId() throws JsonMappingException, JsonProcessingException {
+        String content = given().spec(specification)
+                .contentType(TestConfig.CONTENT_TYPE_XML)
+                .accept(TestConfig.CONTENT_TYPE_XML)
+                    .pathParam("id", person.getId())
+				    .when()
+					.patch("{id}/enable")
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+						.asString();
+		
+        PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
+        person = persistedPerson;
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getGender());
+        assertTrue(persistedPerson.getEnabled());
+
+        assertEquals(person.getId(), persistedPerson.getId());
+
+        assertEquals("Isaac", persistedPerson.getFirstName());
+        assertEquals("Newton RS", persistedPerson.getLastName());
+        assertEquals("Reino Unido", persistedPerson.getAddress());
+        assertEquals("Male", persistedPerson.getGender());   
+	}
+
+    @Test
+    @Order(6)
 	public void testDelete() throws JsonMappingException, JsonProcessingException {
         given().spec(specification)
             .contentType(TestConfig.CONTENT_TYPE_XML)
@@ -225,7 +257,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
 
 
     @Test
-    @Order(6)
+    @Order(7)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException {
 		String content = given().spec(specification)
                 .contentType(TestConfig.CONTENT_TYPE_XML)
@@ -273,7 +305,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
 	}
 
     @Test
-    @Order(7)
+    @Order(8)
 	public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
         RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
             .setBasePath("/api/person/v1")
