@@ -186,5 +186,6 @@ public class PersonControllerCorsTest extends AbstractIntegrationTest {
         person.setLastName("Young");
         person.setAddress("São Paulo - Brasil");
         person.setGender("Male");
+        person.setEnabled(true);
     }
 }
