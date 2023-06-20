@@ -43,6 +43,21 @@ public class BookServices {
         return assembler.toModel(bookVoPage, link);
     }
 
+    public PagedModel<EntityModel<BookVO>> findByTitle(String title, Pageable pageable){
+        Page<Book> bookPage = repository.findBookByTitle(title, pageable);
+        
+        Page<BookVO> bookVoPage = bookPage.map(b -> DozerMapper.parseObject(b, BookVO.class));
+        bookVoPage.map(book -> book.add(
+            linkTo(methodOn(BookController.class).findById(book.getId())).withSelfRel()));
+            
+        Link link = linkTo(methodOn(BookController.class).findAll(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            "asc")).withSelfRel();
+
+        return assembler.toModel(bookVoPage, link);
+    }
+
     public BookVO findById(Long id){
         Book entity = repository.findById(id)
             .orElseThrow(() -> new RequiredObjectIsNullException("No records found for this ID!"));
