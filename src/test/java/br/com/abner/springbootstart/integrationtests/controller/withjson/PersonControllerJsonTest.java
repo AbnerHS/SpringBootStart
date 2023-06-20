@@ -34,7 +34,7 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
-public class PersonControllerTest extends AbstractIntegrationTest {
+public class PersonControllerJsonTest extends AbstractIntegrationTest {
     
     private static RequestSpecification specification;
     private static ObjectMapper objectMapper;
