@@ -247,6 +247,30 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
                 .statusCode(403);
 	}
 
+    @Test
+    @Order(7)
+	public void testHATEOAS() throws JsonMappingException, JsonProcessingException {
+		String content = given().spec(specification)
+                .contentType(TestConfig.CONTENT_TYPE_JSON)
+                .queryParams("page", 0, "size", 10, "direction", "asc")
+				    .when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+                        .asString();
+		
+        assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/api/book/v1/12\"}}}"));   
+        
+        assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/api/book/v1?limit=10&direction=asc&page=0&size=10&sort=title,asc\"}"));   
+        assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/api/book/v1?page=0&limit=10&direction=asc\"}"));   
+        assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/api/book/v1?limit=10&direction=asc&page=1&size=10&sort=title,asc\"}"));
+        assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/api/book/v1?limit=10&direction=asc&page=1&size=10&sort=title,asc\"}"));   
+        
+        assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":15,\"totalPages\":2,\"number\":0}}"));   
+    }
+
     private void mockBook() {
         book.setAuthor("Dan Brown");
         book.setTitle("Origin");
