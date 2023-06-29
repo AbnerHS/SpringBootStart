@@ -412,6 +412,49 @@ public class PersonControllerYamlTest extends AbstractIntegrationTest {
                 .statusCode(403);
 	}
 
+@Test
+    @Order(7)
+	public void testHATEOAS() throws JsonMappingException, JsonProcessingException {
+		String rawContent = given().spec(specification)
+                .config(RestAssuredConfig
+                    .config()
+                    .encoderConfig(EncoderConfig.encoderConfig()
+                        .encodeContentTypeAs(
+                            TestConfig.CONTENT_TYPE_YML,
+                            ContentType.TEXT)))
+                .contentType(TestConfig.CONTENT_TYPE_YML)
+                .accept(TestConfig.CONTENT_TYPE_YML)
+                .queryParams("page", 0, "size", 10, "direction", "asc")
+				    .when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+                        .asString();
+
+        String content = rawContent.replace("\n", "").replace("\r", "");
+
+        assertTrue(content.contains("links:" +
+                "  - rel: \"self\"" +
+                "    href: \"http://localhost:8888/api/person/v1/704\""));   
+        
+        assertTrue(content.contains("- rel: \"first\"" +
+                "  href: \"http://localhost:8888/api/person/v1?limit=10&direction=asc&page=0&size=10&sort=firstName,asc\""));   
+        assertTrue(content.contains("- rel: \"self\"" +
+                "  href: \"http://localhost:8888/api/person/v1?page=0&limit=10&direction=asc\""));   
+        assertTrue(content.contains("- rel: \"next\"" +
+                "  href: \"http://localhost:8888/api/person/v1?limit=10&direction=asc&page=1&size=10&sort=firstName,asc\""));
+        assertTrue(content.contains("- rel: \"last\"" +
+                "  href: \"http://localhost:8888/api/person/v1?limit=10&direction=asc&page=101&size=10&sort=firstName,asc\""));   
+        
+        assertTrue(content.contains("page:" +
+                "  size: 10" +
+                "  totalElements: 1013" +
+                "  totalPages: 102" +
+                "  number: 0"));   
+    }
+
     private void mockPerson() {
         person.setFirstName("Isaac");
         person.setLastName("Newton");

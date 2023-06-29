@@ -43,50 +43,6 @@ public class PersonServicesTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // @Test
-    // void testFindAll() {
-    //     List<Person> personList = input.mockEntityList();
-
-    //     when(repository.findAll()).thenReturn(personList);
-
-    //     List<PersonVO> result = service.findAll();
-    //     assertNotNull(result);
-    //     assertEquals(14, personList.size());
-
-    //     PersonVO personOne = result.get(1);
-        
-    //     assertNotNull(personOne);
-    //     assertNotNull(personOne.getId());
-    //     assertNotNull(personOne.getLinks());
-    //     assertTrue(personOne.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
-    //     assertEquals("First Name Test1", personOne.getFirstName());
-    //     assertEquals("Last Name Test1", personOne.getLastName());
-    //     assertEquals("Addres Test1", personOne.getAddress());
-    //     assertEquals("Female", personOne.getGender());
-
-    //     PersonVO personFour = result.get(4);
-        
-    //     assertNotNull(personFour);
-    //     assertNotNull(personFour.getId());
-    //     assertNotNull(personFour.getLinks());
-    //     assertTrue(personFour.toString().contains("links: [</api/person/v1/4>;rel=\"self\"]"));
-    //     assertEquals("First Name Test4", personFour.getFirstName());
-    //     assertEquals("Last Name Test4", personFour.getLastName());
-    //     assertEquals("Addres Test4", personFour.getAddress());
-    //     assertEquals("Male", personFour.getGender());
-
-    //     PersonVO personSeven = result.get(7);
-        
-    //     assertNotNull(personSeven);
-    //     assertNotNull(personSeven.getId());
-    //     assertNotNull(personSeven.getLinks());
-    //     assertTrue(personSeven.toString().contains("links: [</api/person/v1/7>;rel=\"self\"]"));
-    //     assertEquals("First Name Test7", personSeven.getFirstName());
-    //     assertEquals("Last Name Test7", personSeven.getLastName());
-    //     assertEquals("Addres Test7", personSeven.getAddress());
-    //     assertEquals("Female", personSeven.getGender());
-    // }
-
     @Test
     void testFindById() {
         Person person = input.mockEntity(1);
